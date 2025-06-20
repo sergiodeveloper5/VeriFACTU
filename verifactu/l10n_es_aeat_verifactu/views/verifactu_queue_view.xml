@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista de lista para cola Veri*FACTU -->
+    <record id="view_verifactu_queue_tree" model="ir.ui.view">
+        <field name="name">verifactu.queue.tree</field>
+        <field name="model">verifactu.queue</field>
+        <field name="arch" type="xml">
+            <tree string="Cola Veri*FACTU" decoration-success="state=='sent'" 
+                  decoration-danger="state=='error'" decoration-warning="state=='pending'">
+                <field name="name"/>
+                <field name="invoice_id"/>
+                <field name="state"/>
+                <field name="priority"/>
+                <field name="retry_count"/>
+                <field name="scheduled_date"/>
+                <field name="processed_date"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista de formulario para cola Veri*FACTU -->
+    <record id="view_verifactu_queue_form" model="ir.ui.view">
+        <field name="name">verifactu.queue.form</field>
+        <field name="model">verifactu.queue</field>
+        <field name="arch" type="xml">
+            <form string="Cola Veri*FACTU">
+                <header>
+                    <button name="action_retry" string="Reintentar" type="object" 
+                            class="btn-primary" attrs="{'invisible': [('state', 'not in', ['error', 'cancelled'])]}"/>
+                    <button name="action_cancel" string="Cancelar" type="object" 
+                            class="btn-secondary" attrs="{'invisible': [('state', 'not in', ['pending', 'processing'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,processing,sent,error"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="invoice_id"/>
+                            <field name="priority"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="retry_count"/>
+                            <field name="max_retries"/>
+                            <field name="scheduled_date"/>
+                            <field name="processed_date"/>
+                        </group>
+                    </group>
+                    <group string="Respuesta" attrs="{'invisible': [('response_data', '=', False)]}">
+                        <field name="response_data" nolabel="1"/>
+                    </group>
+                    <group string="Error" attrs="{'invisible': [('error_message', '=', False)]}">
+                        <field name="error_message" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista de búsqueda para cola Veri*FACTU -->
+    <record id="view_verifactu_queue_search" model="ir.ui.view">
+        <field name="name">verifactu.queue.search</field>
+        <field name="model">verifactu.queue</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Cola Veri*FACTU">
+                <field name="name"/>
+                <field name="invoice_id"/>
+                <field name="state"/>
+                <filter string="Pendientes" name="pending" domain="[('state', '=', 'pending')]"/>
+                <filter string="Procesando" name="processing" domain="[('state', '=', 'processing')]"/>
+                <filter string="Enviados" name="sent" domain="[('state', '=', 'sent')]"/>
+                <filter string="Errores" name="error" domain="[('state', '=', 'error')]"/>
+                <separator/>
+                <filter string="Hoy" name="today" domain="[('create_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter string="Estado" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Compañía" name="group_company" context="{'group_by': 'company_id'}"/>
+                    <filter string="Fecha" name="group_date" context="{'group_by': 'create_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción para cola Veri*FACTU -->
+    <record id="action_verifactu_queue" model="ir.actions.act_window">
+        <field name="name">Cola Veri*FACTU</field>
+        <field name="res_model">verifactu.queue</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_verifactu_queue_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay elementos en la cola de Veri*FACTU
+            </p>
+            <p>
+                La cola de Veri*FACTU gestiona el envío automático de facturas al sistema AEAT.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menú para cola Veri*FACTU -->
+    <menuitem id="menu_verifactu_queue"
+              name="Cola Veri*FACTU"
+              parent="l10n_es_aeat.menu_aeat_root"
+              action="action_verifactu_queue"
+              sequence="20"/>
+</odoo>

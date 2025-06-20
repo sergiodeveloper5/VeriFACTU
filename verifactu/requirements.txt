@@ -1,0 +1,6 @@
+zeep
+requests
+qrcode
+Pillow
+unidecode
+cryptography==3.4.8

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Trabajo cron para procesar cola Veri*FACTU -->
+    <record id="ir_cron_process_verifactu_queue" model="ir.cron">
+        <field name="name">Procesar Cola Veri*FACTU</field>
+        <field name="model_id" ref="model_verifactu_queue"/>
+        <field name="state">code</field>
+        <field name="code">model.process_pending_queue()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+        <field name="doall">False</field>
+    </record>
+
+    <!-- Trabajo cron para limpiar cola antigua -->
+    <record id="ir_cron_cleanup_verifactu_queue" model="ir.cron">
+        <field name="name">Limpiar Cola Veri*FACTU Antigua</field>
+        <field name="model_id" ref="model_verifactu_queue"/>
+        <field name="state">code</field>
+        <field name="code">
+# Eliminar registros enviados o con error de más de 30 días
+from datetime import datetime, timedelta
+old_date = datetime.now() - timedelta(days=30)
+old_records = model.search([
+    ('state', 'in', ['sent', 'error', 'cancelled']),
+    ('create_date', '&lt;', old_date)
+])
+old_records.unlink()
+        </field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+        <field name="doall">False</field>
+    </record>
+</odoo>

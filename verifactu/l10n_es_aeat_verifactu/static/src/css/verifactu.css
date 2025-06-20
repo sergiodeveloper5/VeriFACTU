@@ -1,0 +1,63 @@
+/* Estilos para Veri*FACTU */
+.verifactu-info {
+    background-color: #e8f4fd;
+    border: 1px solid #bee5eb;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.verifactu-hash {
+    font-family: monospace;
+    font-size: 0.9em;
+    word-break: break-all;
+}
+
+.verifactu-qr {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.verifactu-qr img {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: white;
+}
+
+.verifactu-status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+.verifactu-status.sent {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.verifactu-status.pending {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.verifactu-status.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.verifactu-tab .o_notebook_headers {
+    border-bottom: 2px solid #007cba;
+}
+
+.verifactu-field-group {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px 0;
+}

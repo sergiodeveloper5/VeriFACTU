@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Plantilla de factura con Veri*FACTU y código QR EPC -->
+    <template id="report_invoice_document_verifactu" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[@name='invoice_address']" position="after">
+            <div class="row" t-if="o.verifactu_enabled and o.verifactu_hash_string">
+                <div class="col-12">
+                    <div class="alert alert-info" style="margin-top: 10px;">
+                        <strong>Veri*FACTU:</strong> Esta factura cumple con los requisitos de verificación fiscal.
+                        <br/>
+                        <small>Hash: <span t-field="o.verifactu_hash_string"/></small>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        
+        <!-- Agregar código QR EPC al final de la factura -->
+        <xpath expr="//div[@id='total']" position="after">
+            <div class="row" t-if="o.verifactu_enabled and o.verifactu_qr_code">
+                <div class="col-12 text-center" style="margin-top: 20px;">
+                    <h5>Código QR EPC - Veri*FACTU</h5>
+                    <img t-att-src="'data:image/png;base64,' + o.verifactu_qr_code" 
+                         style="max-width: 200px; max-height: 200px;"/>
+                    <br/>
+                    <small class="text-muted">Escanee para verificar la autenticidad de esta factura</small>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Reporte principal -->
+    <record id="action_report_invoice_verifactu" model="ir.actions.report">
+        <field name="name">Factura Veri*FACTU</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_es_aeat_verifactu.report_invoice_document_verifactu</field>
+        <field name="report_file">l10n_es_aeat_verifactu.report_invoice_document_verifactu</field>
+        <field name="print_report_name">'Factura Veri*FACTU - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
